@@ -14,7 +14,7 @@ website:
    left:
       - text: Básico do R
         menu:
-         - href: Aula1.R
+         - href: Aula1.qmd
            text: Introdução ao R
          - href: Aula2.qmd
            text: Pacotes e carregamento em R - Primeiro plot
