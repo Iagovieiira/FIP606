@@ -1,0 +1,275 @@
+---
+title: "Aula 8"
+format: html
+editor: visual
+---
+
+Pacotes
+
+```{r}
+library(tidyverse)
+library(gsheet)
+library(patchwork)
+library(r4pde)
+library(emmeans)
+library(performance)
+library(multcomp)
+library(agricolae)
+library(epifitter)
+```
+
+Importação
+
+```{r}
+soja <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=866852711")
+```
+
+Transformar para fator = preciso tranformar fator pois esta como número
+
+```{r}
+soja <- soja |> 
+  mutate(TRAT = as.factor(TRAT),
+         BLOCO = as.factor(BLOCO))
+
+is.vector(soja)
+
+is.factor(soja$TRAT)
+```
+
+Vizualiza
+
+```{r}
+dfc <- soja |> 
+  ggplot(aes(TRAT, DFC)) +
+  geom_jitter(which = 0.05)
+dfc
+```
+
+```{r}
+fer <- soja |> 
+  ggplot(aes(TRAT, FER)) +
+  geom_jitter(which = 0.05)
+dfc
+```
+
+```{r}
+prod <- soja |> 
+  ggplot(aes(TRAT, PROD)) +
+  geom_jitter(which = 0.05)
+dfc
+```
+
+Para juntar os 3 graficos
+
+```{r}
+(dfc+fer+prod)
+```
+
+```{r}
+dfc <- soja |> 
+  ggplot(aes(TRAT, DFC)) +
+  geom_jitter(width = 0.05, color = "gray70") +
+  stat_summary(fun.data = "mean_cl_boot", color = "black")
+
+dfc
+```
+
+```{r}
+fer <- soja |> 
+  ggplot(aes(TRAT, FER)) +
+  geom_jitter(width = 0.05, color = "gray70") +
+  stat_summary(fun.data = "mean_cl_boot", color = "black")
+
+dfc
+```
+
+```{r}
+prod <- soja |> 
+  ggplot(aes(TRAT, PROD)) +
+  geom_jitter(width = 0.05, color = "gray70") +
+  stat_summary(fun.data = "mean_cl_boot", color = "black")
+
+dfc
+
+```
+
+```{r}
+(dfc+fer+prod)
+```
+
+anova DFC
+
+```{r}
+aov_dfc <- lm(DFC ~ TRAT + BLOCO,
+              data = soja)
+anova(aov_dfc)
+```
+
+```{r}
+check_heteroscedasticity(aov_dfc)
+check_normality(aov_dfc)
+```
+
+```{r}
+medias_dfc <- emmeans(aov_dfc, ~ TRAT)
+medias_dfc
+```
+
+```{r}
+pwpm(medias_dfc)
+```
+
+```{r}
+cld(medias_dfc, Letters = LETTERS)
+```
+
+Anova FER
+
+```{r}
+aov_fer <- lm(FER ~ TRAT + BLOCO,
+              data = soja)
+anova(aov_fer)
+```
+
+```{r}
+check_heteroscedasticity(aov_fer)
+check_normality(aov_fer)
+```
+
+```{r}
+## Tranformação por logarítimo
+
+soja <- soja |> 
+  mutate(FER2 = log(FER))
+
+aov_fer2 <- lm (FER2 ~ TRAT + BLOCO, data = soja)
+
+anova(aov_fer2)
+
+check_normality(aov_fer2)
+check_heteroscedasticity(aov_fer2)
+
+```
+
+```{r}
+b <- boxcox(lm(soja$FER ~1))
+```
+
+```{r}
+lambda <- b$x[which.max(b$y)] 
+lambda
+```
+
+```{r}
+soja$FER <- (soja$FER^lambda -1)/lambda
+soja$FER
+```
+
+```{r}
+aov_fer2 <- lm(FER ~ TRAT + BLOCO,
+              data = soja)
+anova(aov_fer2)
+```
+
+```{r}
+check_heteroscedasticity(aov_fer2)
+check_normality(aov_fer2)
+```
+
+```{r}
+medias_fer2 <- emmeans(aov_fer2, ~ TRAT)
+medias_fer2
+```
+
+```{r}
+cld(medias_fer2, Letters = LETTERS)
+```
+
+Anova PROD
+
+```{r}
+aov_prod <- lm(PROD ~ TRAT + BLOCO,
+              data = soja)
+anova(aov_prod)
+```
+
+```{r}
+check_heteroscedasticity(aov_prod)
+#homegenidade de variancia e heteroscedasticidade é a mesma coisa  
+check_normality(aov_prod)
+```
+
+```{r}
+medias_prod <- emmeans(aov_prod, ~ TRAT)
+medias_prod
+```
+
+```{r}
+pwpm(medias_prod)
+```
+
+```{r}
+cld(medias_prod, Letters = LETTERS)
+```
+
+```{r}
+df_prod <- data.frame(medias_prod)
+df_prod |> 
+  
+  ggplot(aes(TRAT, emmean))+
+  geom_point()+
+  ylim(3000,6500)+
+  geom_errorbar(aes(min = lower.CL,
+                    max = upper.CL),
+                width = 0.1)+
+annotate (geom = "text", x = 1.2, y = 4200,
+         label = "A")
+```
+
+Conjunto de dados couve
+
+```{r}
+couve <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=1807247585")
+```
+
+```{r}
+cov <- couve |> 
+  ggplot(aes(day, severity)) +
+   geom_point(which = 0.05)+
+  facet_wrap(~~ Irrigation)
+cov
+```
+
+```{r}
+couve |> 
+  group_by(day, Irrigation) |> 
+  summarise(mean_sev = mean(severity)) |> 
+  ggplot(aes(day, mean_sev)) +
+   geom_point(which = 0.05)+ 
+  geom_line()+
+  facet_wrap(~~ Irrigation)
+  
+```
+
+Area abaixo da curva
+
+```{r}
+#AACPD
+
+couve2 <- couve |> 
+  group_by(Irrigation, rep) |> 
+  summarise(aacpd = AUDPC(day, severity))
+```
+
+ANOVA
+
+```{r}
+m_couve <- lm(aacpd ~ Irrigation + factor(rep), data = couve2)
+anova(m_couve)
+```
+
+```{r}
+#coeficiente de variação
+
+cv.model(m_couve)
+```

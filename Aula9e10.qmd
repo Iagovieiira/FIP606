@@ -1,0 +1,350 @@
+---
+title: "Aula 9"
+format: html
+editor: visual
+---
+
+Aula 9 - parcela subdividida
+
+```{r}
+library(gsheet)
+library(tidyverse)
+library(lme4)
+library(performance)
+library(DHARMa)
+library(emmeans)
+library(multcomp)
+library(r4pde)
+library(drc)
+```
+
+```{r}
+milho <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=1345524759")
+```
+
+Vizualizar
+
+```{r}
+milho |> 
+  ggplot(aes(method,index))+
+  geom_jitter(which = 0.1, alpha = 0.2)+
+  facet_wrap(~ hybrid)+
+  stat_summary(fun.data = "mean_cl_boot", size = 0.5, color = "blue")
+
+```
+
+```{r}
+milho <- milho |> 
+  mutate(block = as.factor(block))
+
+mix2 <- lmer(sqrt(index) ~ hybrid*method + block + (1|block/hybrid), data = milho)
+
+anova (mix2)
+
+check_normality(mix2)
+check_heteroscedasticity(mix2)
+
+
+
+```
+
+```{r}
+plot(simulateResiduals(mix2))
+qqnorm(residuals(mix2))
+qqline(residuals(mix2))
+hist(residuals(mix2))
+```
+
+```{r}
+medias_milho <- emmeans(mix2,
+                        ~ hybrid | method,
+                        type = "response")
+medias_milho
+medias_milho2 <- emmeans(mix2,
+                         ~ method | hybrid,
+                         type = "response")
+medias_milho2
+```
+
+```{r}
+cld(medias_milho2, Letters = LETTERS)
+```
+
+```{r}
+mix3 <- lmer(sqrt(index) ~ hybrid*method + block + (1|block/hybrid), data = milho)
+
+anova (mix3)
+
+check_normality(mix3)
+check_heteroscedasticity(mix3)
+
+```
+
+OUTR O PACOTE: estande
+
+```{r}
+estande <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=401662555")
+```
+
+```{r}
+   estande |> 
+  ggplot(aes(trat, nplants))+
+  geom_jitter(which = 0.1, alpha = 0.3)+
+  facet_wrap(~ exp)+
+  stat_summary(fun.data = "mean_cl_boot", size = 0.5, color = "black")+
+     geom_smooth(method = "lm", se = F)
+
+```
+
+experimento 1
+
+```{r}
+exp1 <- estande |> 
+  filter(exp == 1)
+
+exp1 |> 
+  ggplot(aes(trat, nplants))+
+  geom_point()+
+  geom_smooth(se = F)
+```
+
+```{r}
+#MODELO LINEAR
+lm1 = lm(nplants ~ trat,
+         data = exp1)
+
+summary (lm1)
+```
+
+experimento 2
+
+```{r}
+exp2 <- estande |> 
+  filter(exp == 2)
+
+exp2 |> 
+  ggplot(aes(trat, nplants))+
+  geom_point()+
+  geom_smooth(se = F, method = "lm",
+              formula = y~poly(x,2),
+              color = "red")+
+  geom_smooth(method = "lm", se = FALSE)
+
+
+```
+
+```{r}
+
+#Modelo de primeira ordem
+lm2 <- lm(nplants~trat,
+          data = exp2)
+
+summary(lm2)
+hist(residuals(lm2))
+
+# Nodelo de segunda ordem
+exp2$trat2 <- exp2$trat^2
+
+```
+
+experimento 3
+
+```{r}
+exp3 <- estande |> 
+  filter(exp == 3)
+
+exp3 |> 
+  ggplot(aes(trat, nplants))+
+  geom_point()+
+  geom_smooth(se = F) #method = "lm")
+```
+
+```{r}
+lm3 <- lm(nplants~trat + trat2,
+          data = exp2)
+
+summary(lm3)
+hist(residuals(lm3))
+```
+
+#comparação de modelos diferente usando os mesmos dados
+
+usando modelo linear generaliazado
+
+```{r}
+#glm2 <- glm(nplants ~ trat, family = gaussian, data = exp2)
+#summary(glm2)
+
+#AIC(glm2)
+
+glm2b <- glm(nplants ~ trat, family = "poisson", data  = exp2)
+summary(glm2b)
+```
+
+```{r}
+glm2b <- glm(nplants ~ trat, family = poisson(link = "log"),
+             data = exp2)
+summary(glm2b)
+AIC(glm2b)
+```
+
+AIC menor é o melhor modelo ajustado.
+
+```{r}
+wm <- WhiteMoldSoybean
+
+
+wm |> 
+  ggplot(aes(inc, yld))+
+  geom_point()+ 
+  facet_wrap(~ study)+
+  theme_minimal()
+```
+
+```{r}
+mofo1 <- lm(yld ~ inc,
+            data = wm)
+#intercepto pordutividade quando a incidencia é zero, inc é o slope com 10% de incidencia esta perdendo 90kg. 
+summary(mofo1)
+```
+
+```{r}
+wm |> 
+  ggplot(aes(inc, yld, group = factor(study)))+
+  geom_point()+
+  #facet_wrap(~ study)+
+  theme_minimal()+
+  geom_smooth(method = "lm", se = F)
+
+mofo1 <- lm(yld ~ inc,
+            data = wm)
+summary(mofo1)
+```
+
+```{r}
+library(broom)
+fit_all <- wm |> 
+  group_by(study) |> 
+  do(tidy(lm(.$yld ~ .$inc), conf.int = TRUE))
+fit_all
+```
+
+```{r}
+fit_all |> 
+  filter(term == "(intercept)") |> 
+  ggplot(aes(x = estimate))+
+  geom_histogram(bins = 8, color = "white", fill = "gray50")+
+  theme_r4pde()+
+  labs(x = "slope", y = "frequency")
+  
+```
+
+```{r}
+library(patchwork)
+
+```
+
+Aula 10 - 29/05
+
+```{r}
+#pacotes 
+library(tidyverse)
+library(patchwork)
+library(AgroR)
+library(corrplot)
+```
+
+```{r}
+imgs <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=373270992")
+```
+
+r2: coeficiente de determinação o quento da variação de y explicada pelo x
+
+coenficiente de correlação: a força de associação entre x e y
+
+```{r}
+imgs1 <- imgs|> 
+  ggplot(aes(Assess, LeafDoctor))+
+geom_point()+ geom_smooth(method = "lm")
+```
+
+```{r}
+imgs2 <- imgs|> 
+  ggplot(aes(Assess, ImageJ))+
+geom_point()+geom_smooth(method = "lm")
+```
+
+```{r}
+imgs3 <- imgs |> 
+  ggplot(aes(LeafDoctor, ImageJ))+
+geom_point()+geom_smooth(method = "lm")
+```
+
+```{r}
+imgs1 + imgs2 + imgs3
+```
+
+```{r}
+#matriz de correlação 
+imgs2 <- imgs |> 
+  dplyr::select(3:5)
+
+  corgraph(imgs2)
+  
+```
+
+```{r}
+cor.test(imgs$Assess, imgs$LeafDoctor)
+  cor(imgs$Assess, imgs$LeafDoctor)
+```
+
+```{r}
+cor_imgs2 <- cor(imgs2)
+corrplot(cor_imgs2, method = "number", type = "upper")
+```
+
+```{r}
+campo <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=866852711")
+```
+
+```{r}
+campo2 <- campo |> 
+  dplyr::select(DFC, FER, PROD)
+
+corgraph(campo2)
+```
+
+```{r}
+campo |> 
+  ggplot(aes(DFC, PROD))+
+  geom_jitter()
+```
+
+```{r}
+pyra <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=465348652")
+```
+
+```{r}
+pyra2 <- pyra |> 
+  group_by(code, dose) |> 
+  summarise(mean_germination = mean(germination))
+
+pyra2 |> 
+  ggplot(aes(dose, mean_germination))+
+  geom_point()+
+  facet_wrap(~code)
+```
+
+```{r}
+
+isolado165 <- pyra2 |> filter(code == "165")
+
+drc1 <- drm(mean_germination ~ dose, data = isolado165,
+            fct = LL.3()) 
+
+AIC(drc1)
+plot(drc1)
+```
+
+```         
+```

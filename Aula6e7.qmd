@@ -1,0 +1,479 @@
+---
+title: "Aula 6"
+format: html
+editor: visual
+---
+
+#Inferencial
+
+#Dois grupos diferentes (independentes)
+
+```{r}
+#pacotes carregados 
+library(tidyverse)
+library(gsheet)
+library(multcomp)
+library(multcompView)
+```
+
+```{r}
+#Importar pacotes 
+
+mg <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=983033137")
+
+```
+
+```{r}
+#vizualização
+mg |> 
+  ggplot(aes(trat, comp))+
+  geom_boxplot()
+
+#demonstra o efeito da suplementação de magnesio que induz a resistencia, visando testar uma hipotese cientifica é que com a suplementação induz a resistencia 
+#a hipotese nula é que o valor das populações são iguais.  
+```
+
+Teste T, usado para dois grupos independentes, primeiro existe se existe uma normalidade, dendencia ou independencia e se as variancias são homogeneas. (teste T não pareado), quem inventou o test t? student
+
+```{r}
+#teste T 
+
+#longo para o largo (ver o formato antes tem que larogo)
+mg2 <- mg |> 
+  pivot_wider(names_from = trat,
+              values_from = comp)
+
+teste1 <- t.test(mg2$Mg2, mg2$control, )
+
+#interpretação: o teste T - ligado ao erro padrão, a probabilidade é pequena pelo fato do p valor ter dado p-value = 2.423e-07 que nesse caso é menor que 0.5 rejeitando a hipotese nula. conclunido que o teste t esta correto. o intervalo de confiança é a diferença verdadeira entre as médias, dado pela ordem de montagem do teste. 
+
+```
+
+```{r}
+#testar a normalidade 
+shapiro.test(mg2$control)
+
+#testar a normalidade hipotese nula, dizendo que a distribuição é normal, maior que 0.5 normalidade. 
+
+hist(mg2$control)
+#faz-se o histograma para saber se é normal 
+```
+
+```{r}
+#testar a normalidade para mg 
+shapiro.test(mg2$Mg2)
+
+#demosnta uma distribuição normal acima de 0.5
+
+
+hist(mg2$Mg2)
+```
+
+```{r}
+#teste F que compara duas variancias
+
+var.test(mg2$control, mg2$Mg2)
+```
+
+```{r}
+qqnorm(mg2$control)
+qqline(mg2$control)
+```
+
+```{r}
+library(report)
+report(teste1)
+```
+
+#Dois Grupos dependentes
+
+```{r}
+#para dois grupos test t, vai usar o test t pareado 
+
+#importar o pacote de dados:
+
+
+escala <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=1729131173")
+
+```
+
+```{r}
+library(dplyr)
+escala2 <- escala |> 
+  dplyr::select(assessment, rater, acuracia) |> 
+  pivot_wider(names_from = assessment,
+              values_from = acuracia)
+escala2
+```
+
+```{r}
+escala |> 
+  ggplot(aes(assessment, acuracia))+
+  geom_boxplot()
+
+#neste caso sugere falta de normalidade
+```
+
+```{r}
+shapiro.test(escala2$Unaided)
+shapiro.test(escala2$Aided1)
+
+
+#regeita a hipotese nula e aceita a falta de normalidade pq p-value = 0.007155. 
+
+```
+
+```{r}
+var.test(escala2$Unaided, escala2$Aided1)
+# se a variancia é homogenea ou não 
+```
+
+```{r}
+t.test(escala2$Aided1, escala2$Unaided,
+       paired = TRUE,
+       var.equal = FALSE)
+
+#teste de comparação de dois grupos de media, com 3 ou mais usa-se anova
+
+```
+
+#equivalente ao não parametico do teste t
+
+```{r}
+wilcox.test(escala2$Aided1,
+            escala2$Unaided, 
+            paired = TRUE) 
+```
+
+#3 ou mais grupos
+
+```{r}
+micelial <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=959387827")
+```
+
+```{r}
+micelial |> 
+  ggplot(aes(especie, tcm))+
+  geom_jitter(width = 0.05)
+
+#menos de oito (6 pontos) - geom_jitter
+```
+
+```{r}
+#anova 
+
+m1 <- lm(tcm ~ especie -1 , data = micelial)
+
+anova(m1)
+summary(m1)
+  
+#estudar a dif. entre os valores para a sabatina 
+
+#segundo o teste da anova não há difrença estatistica entre as especies apenas numerica, todas com uma taxa micelial muito alta. 
+
+```
+
+```{r}
+theme_set(theme_bw())
+
+#manter o mesmo tema 
+```
+
+```{r}
+library(emmeans)
+medias1 <- emmeans(m1, ~ especie)
+medias1
+
+library(multcomp)
+
+
+
+library(multcompView)
+
+cld(medias1)
+```
+
+```{r}
+hist(m1$residuals)
+```
+
+```{r}
+shapiro.test(m1$residuals)
+#não rejeita a hipotese p-value = 0.8782.
+```
+
+```{r}
+bartlett.test(tcm ~ especie, data = micelial)
+```
+
+```{r}
+library(DHARMa)
+plot(simulateResiduals(m1))
+```
+
+```{r}
+library(performance)
+check_normality(m1)
+check_heteroscedasticity(m1)
+check_model(m1)
+```
+
+Aula 7 - 24/04
+
+```{r}
+inseticida <- InsectSprays
+
+library(tidyverse)
+
+inceticida <- InsectSprays
+inceticida |> 
+  count(spray)
+
+#anova com um fator ou seis niveis de fator 
+```
+
+Exploração do conjunto de dados - variavel numerica discreta
+
+```{r}
+inceticida |> 
+ggplot(aes(spray, count))+
+  geom_boxplot()+
+  geom_jitter(width = 0.05)
+#observando podemos ver que as variancias são heterogeneas, maior variabilidade(f), 
+```
+
+Ajusta a nova e trabalha com os residuos da anova e ai parte pa os testes, usando performace e darman.
+
+```{r}
+m1 <- lm(count ~ spray, 
+         data = inceticida)
+m1
+```
+
+```{r}
+summary(m1)
+```
+
+```{r}
+anova(m1)
+```
+
+```{r}
+hist(m1$residuals)
+```
+
+shapiro mostra que significativo não é normal, se for significativo é normal.
+
+```{r}
+shapiro.test(m1$residuals)
+
+```
+
+```{r}
+qqnorm(m1$residuals)
+qqline(m1$residuals)
+```
+
+o que é mais importante a normalidade ou variancias homogeneas o que é a violação mais problematica?
+
+homocedasticidade(?)
+
+Quando temos dados de contagem normalmente a raiz é uma boa opção.
+
+Bartlett - test
+
+```{r}
+bartlett.test(count ~ spray,
+              data = inseticida)
+```
+
+```{r}
+check_normality(m1)
+```
+
+```{r}
+check_heteroscedasticity(m1)
+```
+
+```{r}
+library(DHARMa)
+plot(simulateResiduals(m1))
+```
+
+Alternativa 1 - transformação
+
+```{r}
+inseticida <- inseticida |> 
+   mutate(count2 = sqrt(count))
+
+inseticida |> 
+  ggplot(aes(spray, count2))+
+  geom_boxplot()+
+  geom_jitter()+
+  theme_bw()
+  
+```
+
+```{r}
+m2 <- lm (count2 ~ spray, data = inseticida)
+
+anova(m2)
+summary(m2)
+
+hist(m2$residuals)
+shapiro.test(m2$residuals)
+
+qqnorm(m2$residuals)
+qqline(m2$residuals)
+
+bartlett.test(count2 ~ spray,
+              data = inseticida)
+
+library(performance)
+check_normality(m2)
+check_heteroscedasticity(m2)
+```
+
+```{r}
+check_normality(m2)
+```
+
+```{r}
+check_heteroscedasticity(m2)
+```
+
+```{r}
+plot(simulateResiduals(m2))
+```
+
+-   os testes adotados em m2 foram com normalidade podendo continuar com os testes.
+
+    ```{r}
+    library(emmeans)
+    m2_medias <- emmeans(m2, ~ spray)
+    plot(m2_medias)
+    library(multcomp)
+    cld(m2_medias)
+
+    ```
+
+Alternativa 2 - teste não paramétrico - sem transformar
+
+```{r}
+library(agricolae)
+kruskal.test(count ~ spray, 
+             data = inceticida)
+
+#rejeita 
+#ipotese nula é que as médias são iguais o que demonstra que rejeita - com 3 grupos ou mais 
+```
+
+```{r}
+m3 <- kruskal(inseticida$count,
+        inceticida$spray, 
+        group = TRUE)
+m3
+
+#da a media dos tratamentos e um ranking para fazer a estatistica, calculando os agrupamentos. 3 grupos ranqueados. o não parametrico deu o mesmo resultado que o modelo transformado. podendo partir para a alternativa 3 assumindo que a distribuição é de acordo com os dados podendo ser poason (modelo linear generalizado - mais moderno)
+```
+
+Alternativa 3 - GLMs
+
+```{r}
+m4 <- glm(count ~ spray,
+          family = poisson, data = inseticida)
+summary(m4)
+anova(m4)
+library(car)
+Anova(m4)
+```
+
+```{r}
+plot(simulateResiduals(m4))
+```
+
+```{r}
+m4_medias <- emmeans(m4, ~spray,
+                     type = "response")
+cld(m4_medias)
+```
+
+valor original - observação resposta original
+
+anova - testo pressupostos
+
+alternativa 1 - trasformação
+
+busca normalização
+
+a2- não parametrico
+
+a3- GLMs
+
+faz tudo isso para cada variavel
+
+-   Transformação BOX-COX
+
+    ```{r}
+    library(MASS)
+    b <- boxcox(lm(inceticida$count+0.1 ~1))
+    lambda <- b$x[which.max(b$y)]
+    lambda
+    inceticida$count3 <- (inceticida$count ^  lambda - 1) / lambda
+    inceticida$count3
+
+    #mandeira de tranformar 
+    ```
+
+uso do novo conjunto uma anova para dois fatores.
+
+#anova Fatorial
+
+```{r}
+li <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=2023059672")
+
+```
+
+```{r}
+li |> 
+  ggplot(aes(factor(dose), severity, color = factor(dose)))+
+  geom_jitter(whidth = 0.1)+
+ facet_wrap(~treat)
+
+
+```
+
+#modelo fatorial (two-way anova)
+
+```{r}
+mf <- lm(severity ~ treat * dose, 
+         data = li)
+mf
+anova(mf)
+
+#demostra que a interassão é significativa, as doses estão diretamente ligadas aos tratamentos. 
+```
+
+testar as primicias
+
+```{r}
+plot(simulateResiduals(mf))
+
+#não teve problema 
+
+```
+
+Compraçaõ de medias, dentro das linhas e dentro das colunas
+
+```{r}
+mf_medias <- (mf ~ treat | dose)
+#cld(mf_medias)
+
+#comparou coluna 
+```
+
+```{r}
+# comprar as linhas 
+mf_medias <- emmeans(mf, ~ dose | treat)
+cld (mf_medias)
+```

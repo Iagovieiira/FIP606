@@ -1,0 +1,7 @@
+"0",""
+"0","# Atribuir letras a cada gráfico"
+"0","(p1 / p2) +"
+"0","  plot_layout(guides = ""collect"", axes= ""collect"") +"
+"0","  plot_annotation(title = ""Coffe rust Ethiopia"", "
+"0","                  caption = ""source: vieira (2022)"","
+"0","    tag_levels = ""A"")"

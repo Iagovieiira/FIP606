@@ -1,0 +1,5 @@
+"0","cr |> "
+"0","group_by(cultivar) |> "
+"0","  summarise(sev_med= median (sev2),"
+"0","            sev_mean = mean(sev2),"
+"0","            sd_mean = sd(sev2)) "

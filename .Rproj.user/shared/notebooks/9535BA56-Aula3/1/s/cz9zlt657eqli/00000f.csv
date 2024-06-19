@@ -1,0 +1,7 @@
+"0",""
+"0","# Região e cultivar "
+"0","cr |> "
+"0","  ggplot(aes(x = sev2, fill = region))+"
+"0","  geom_histogram()+"
+"0","  facet_grid(region ~ cultivar)"
+"0",""

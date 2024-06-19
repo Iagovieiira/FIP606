@@ -1,0 +1,5 @@
+"0","sbr <- RustSoybean"
+"0",""
+"0","sbr |> "
+"0","  ggplot(aes(longitude, latitude)) +"
+"0","  geom_point()+coord_sf()"

@@ -1,0 +1,8 @@
+"0","BRA <- ne_states (country = ""Brazil"","
+"0","                  returnclass = ""sf"")"
+"0","MG <- BRA |> "
+"0","  filter(name_en == ""Minas Gerais"")"
+"0","bra <- ggplot(BRA) +"
+"0","  geom_sf(fill = ""white"", color = ""blue"", linewidth = 0.5) +"
+"0","  geom_point(data = MG, aes(longitude, latitude), color =""red"") + theme_map() +"
+"0","  annotation_north_arrow(which_north = ""grid"")"

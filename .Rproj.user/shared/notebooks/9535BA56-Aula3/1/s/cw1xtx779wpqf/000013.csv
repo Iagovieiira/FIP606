@@ -1,0 +1,4 @@
+"0","#Média, mediana, cultivar da região "
+"0","cr |> "
+"0","group_by(region) |> "
+"0","  summarise(inc_med= median (inc), inc_mean = mean(inc), sd_mean = sd(inc)) "
