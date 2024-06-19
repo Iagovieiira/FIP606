@@ -1,0 +1,42 @@
+
+ Aprendendo funções básicas no R. 
+
+# comentario 
+
+x <- 10
+y <- x * 10 
+z <- x * y
+
+
+A <- c(1:10)
+
+b <- c(11:20)
+
+df <- data.frame(A,b)
+
+library(agricolae)
+
+dates<-c(14,21,28) 
+# days
+# example 1: evaluation - vector
+evaluation<-c(40,80,90)
+audpc(evaluation,dates)
+
+
+library(epifitter)
+
+plot(pressure)
+str(pressure)
+
+
+df <- cars
+cars
+
+df$dist <- log(df$dist)
+plot(df$dist)
+df$dist
+
+
+library(tidyverse)
+
+df |> 
