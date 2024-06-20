@@ -1,0 +1,80 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "FIP606"
+  favicon: imglogo.png
+  image: imgiago.png
+ 
+ 
+  navbar:
+   pinned: true
+   logo: imgsite.png
+   left:
+      - text: Iniciando o progrma R
+        menu:
+         - href: Aula1.qmd
+           text: Introdução ao R
+         - href: Aula2.qmd
+           text: Pacotes e carregamento em R - Primeiro plot
+            
+      - text: Criação de Gráficos  
+        menu: 
+        - href: Aula3.qmd
+          text: Importação, sumarização, viazualização e criação de subconjuntos 
+        - href: Aula4.qmd
+          text: Formato longo e formato largo - Reestruturação do banco de dados
+        
+      - text: Análises estatísticas
+        menu:  
+        - href: Aula5.qmd
+          text: Análise do conjunto de dados da prova
+        - href: Aula6e7.qmd
+          text: Testes de normalidade, paramétricos ou não paramétricos e Transformação de dados
+        - href: Aula8.qmd
+          text: Transformação (Box-Cox) - ANOVA 
+        - href: Aula9e10.qmd
+          text: Análise de correlação, modelo misto e regressão linear  
+      
+      - text: Elaboração de mapas 
+        menu: 
+        - href: Aula11.qmd
+          text: Elaboração de Mapas
+  
+          
+        
+   tools:
+       - icon: linkedin
+         href: https://www.linkedin.com/in/iago-vieira-b31315266/
+       - icon: instagram
+         menu: 
+            - text: Iago vieira
+              url: https://www.instagram.com/iagovieiira?igsh=MXJjaWgyYTV2Z3EyYw%3D%3D&utm_source=qr
+            - text: Emerson M. Del Ponte
+              url: https://www.instagram.com/emdelponte/
+            - text: Fitopatolofia UFV
+              url: https://www.instagram.com/fitopatologiaufv/
+       - icon: youtube
+         href: https://www.youtube.com/edelponte
+       - icon: github
+         menu: 
+            - text: Iago Vieira
+              url: https://github.com/Iagovieiira
+            - text: Emerson M. Del Ponte
+              url: https://github.com/emdelponte
+format:
+  html:
+    theme: 
+      light: flatly
+      dark: superhero
+    css: styles.css
+    toc: true
+
+editor: visual
+        
+        
+        
+        
+        
+
