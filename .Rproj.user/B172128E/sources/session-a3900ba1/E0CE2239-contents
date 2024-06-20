@@ -10,7 +10,7 @@ website:
  
   navbar:
    pinned: true
-   logo: imgsite.png
+   logo: imglogo.png
    left:
       - text: Iniciando o progrma R
         menu:
