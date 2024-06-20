@@ -1,12 +1,2 @@
----
-title: "Olá, seja bem-vindo!"
- about:
-  template: jolla
-  id: about-block
-  image: "imgiago.png"
-  image-shape: round
----
-```{r}
-oi
-```
+
  
