@@ -1,4 +1,0 @@
-"0","inceticida |> "
-"0","ggplot(aes(spray, count))+"
-"0","  geom_boxplot()+"
-"0","  geom_jitter(width = 0.05)"

@@ -1,7 +1,0 @@
-"0","#para dois grupos test t, vai usar o test t pareado "
-"0",""
-"0","#importar o pacote de dados:"
-"0",""
-"0",""
-"0","escala <- gsheet2tbl(""https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=1729131173"")"
-"0",""

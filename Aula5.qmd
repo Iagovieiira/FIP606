@@ -2,6 +2,8 @@
 title: "Aula 5"
 format: html
 editor: visual
+message: false
+warnig: false
 ---
 
 Aula 5 - Dado um conjunto de dados da prova:

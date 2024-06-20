@@ -1,5 +1,7 @@
 ---
 output: html_document
+message: false
+warnig: false
 editor_options: 
   chunk_output_type: inline
 ---
@@ -179,6 +181,7 @@ cr |>
 cr |> 
   tabyl(cultivar, farm_management)
 ```
+
 ```{r}
 cr |>  
   count(farm_management, cultivar) |> 
@@ -187,6 +190,7 @@ cr |>
 
 
 ```
+
 ```{r}
 
 library(ggthemes)
@@ -205,6 +209,7 @@ cr |>
 
 
 ```
+
 ```{r}
 library(gsheet)
 library(tidyverse)
@@ -229,5 +234,4 @@ mg |>
                 width = 0.05)
 ```
 
-
-```{r}
+\`\`\`{r}

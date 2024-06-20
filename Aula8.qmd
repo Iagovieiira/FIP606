@@ -2,6 +2,8 @@
 title: "Aula 8"
 format: html
 editor: visual
+message: false
+warnig: false
 ---
 
 Pacotes

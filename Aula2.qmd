@@ -2,6 +2,8 @@
 title: "Aula 2"
 format: html
 editor: visual
+message: false
+warnig: false
 editor_options: 
   chunk_output_type: console
 ---
