@@ -7,6 +7,6 @@ title: "Olá, seja bem-vindo!"
   image-shape: round
 ---
 ```{r}
-
+oi
 ```
  
