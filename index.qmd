@@ -1,11 +1,12 @@
 ---
-title: "FIP6062"
+title: "Olá, seja bem-vindo!"
+ about:
+  template: jolla
+  id: about-block
+  image: "imgiago.png"
+  image-shape: round
 ---
-
-This is a Quarto website.
-
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
-
 ```{r}
-1 + 1
+
 ```
+ 
