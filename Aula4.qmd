@@ -1,4 +1,5 @@
 ---
+title: "Uso do datapasta e Tabela de contingência"
 output: html_document
 message: false
 warnig: false
@@ -6,18 +7,40 @@ editor_options:
   chunk_output_type: inline
 ---
 
-Aula 4
+Durante a aula 4 , serão apresentados diversas operações com dados `datapasta`, para copiar e colar dados como vetores, data frames e tribbles. Também serão feitas tabelas de contingência e gráficos de barras para análise de dados categóricos, utilizando as funções `count` e `tabyl` do pacote `janitor`.
 
-Baixar o pacote #datapasta
+Inicialmente, serão instalados (**`datapasta`** e **`janitor`**) e carregados os pacotes que serão necessários durante esta aula.
 
-Com objetivo de conseguir importar dados de uma tabela que se tenha com uma coluna ou com mais de uma.
+-   "Packages" -\> "Install" -\> Na linha "Packages", digite o nome do pacote de interesse-\> Em seguida, clique em "Install"
+
+## **Pacotes carregados**
+
+```{r}
+library(tidyverse)
+library(datapasta)
+library(janitor)
+library(tidyverse)
+library(ggthemes)
+```
+
+## **Pacote `datapasta`**
+
+O pacote `datapasta` amplia as capacidades do `RStudio` ao oferecer funcionalidades extras para a cópia e colagem de dados de diferentes origens. Isso permite a importação de dados de tabelas que possuam uma ou várias colunas.
+
+### ***Paste as vector***
+
+Para colar valores como um vetor, seleciona-se "*Paste as vector*"
 
 ```{r}
 #usado para apenas uma coluna 
 
-dat1 <-c("comp", "9", "12.5", "10", "8", "13.2", "11", "10.8", "9.5", "10.8", "10.4", "13.72", "15.91", "15.7", "14.2", "15.9", "16.54", "18", "14.4", "16.41", "16")
+vet <-c("comp", "9", "12.5", "10", "8", "13.2", "11", "10.8", "9.5", "10.8", "10.4", "13.72", "15.91", "15.7", "14.2", "15.9", "16.54", "18", "14.4", "16.41", "16")
 
 ```
+
+### ***Paste as tribble***
+
+Uma opção para criar um novo data frame é colar utilizando a opção "*Paste as tribble*":
 
 ```{r}
 #usado para mais de uma coluna 
@@ -47,7 +70,7 @@ dat2 <- tibble::tribble(
 
 ```
 
-Dados sobre os países:
+Utilizando dados sobre os países:
 
 ```{r}
 visitas <- tibble::tribble(
@@ -87,9 +110,9 @@ visitas <- tibble::tribble(
 
 ```
 
-```{r}
+-   Utilizando a função "*paste as tribble"*, os dados presentes neste link (<https://r4pde.net/temporal-fitting.html#entering-data> - seção 10.4) serão importados:
 
-library(tidyverse)
+```{r}
 
 #os dados a seguir estão no formato largo
 pepper <- 
@@ -105,12 +128,21 @@ pepper <-
   49, 0.999, 0.999,  0.74
   ) 
 
+
+```
+
+-   Visualizando os dados importados acima, é possível observar que eles estão no formato largo. Sendo preciso transformá-los para o formato longo.
+
+-   Para isso, será utilizada a função `pivot_longer (tidyr)`. Indicamos quais colunas serão transformadas para o formato longo e atribuímos nomes às novas colunas:
+
+```{r}
 #Transfromar para o formato longo 
 
 pepper |> 
   pivot_longer(2:4, 
                names_to = "epidemic",
                values_to = "inc") |> 
+  
   
   #Criar grafico no ggplot (grafico de pontos com linhas)
   ggplot(aes(t, inc, color = epidemic)) +
@@ -123,6 +155,8 @@ pepper |>
 #theme(legend.position = "none")
   
 ```
+
+Criação de gráfico de pontos com linhas utilizando o `pivot_longer`:
 
 ```{r}
 
@@ -150,7 +184,11 @@ pepper |>
   
 ```
 
-Tabela de contingência
+## **Tabela de contingência**
+
+Serão construídas tabelas de contingências. Estas tabelas que permitem fazer contagens de elementos/ ocorrências de variáveis categóricas dentro de uma mesma coluna rapidamente.
+
+Formato `.csv`.
 
 ```{r}
 
@@ -160,6 +198,10 @@ cr <- read_csv ("https://raw.githubusercontent.com/emdelponte/paper-coffee-rust-
 cr |> 
   count(region, zone)
 ```
+
+### **Utilizando a função `tabyl`**
+
+Dentro do pacote `janitor` há a função `tabyl`, com objetivo de gera uma tabela de frequências:
 
 ```{r}
 library(janitor)
@@ -182,6 +224,10 @@ cr |>
   tabyl(cultivar, farm_management)
 ```
 
+### **Visualizando**
+
+`count` é utilizada para contar o número de ocorrências de valores únicos em uma variável ou combinação de variáveis dentro de um conjunto de dados. Pertence ao pacote `dplyr`. Foi criado o gráficos de coluna. Faz o empilhamento das colunas. Padrão steck.
+
 ```{r}
 cr |>  
   count(farm_management, cultivar) |> 
@@ -191,9 +237,10 @@ cr |>
 
 ```
 
+Gráfico de barras lado a lado. Alterando a posição (dodge):
+
 ```{r}
 
-library(ggthemes)
 #para desemplilhar e colocar uma barra ao lado da outra
 
 cr |>  
@@ -210,12 +257,17 @@ cr |>
 
 ```
 
+### **Importação de dados de planilha**
+
+Formato `online`
+
 ```{r}
 library(gsheet)
 library(tidyverse)
 
 mg <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1aID5Dh6PlBVCKzU1j7k-WA6zuWQWE2NhtWEgdJtt5iA/edit#gid=921203844")
 
+#Criando gráficos de colunas com médias e desvio padrão.
 
 mg |> 
   ggplot(aes(trat, comp))+

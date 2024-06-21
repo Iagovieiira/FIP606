@@ -1,5 +1,5 @@
 ---
-title: "Aula 2"
+title: "Importação de dados e criação de gráficos simples"
 format: html
 editor: visual
 message: false
@@ -7,6 +7,10 @@ warnig: false
 editor_options: 
   chunk_output_type: console
 ---
+
+Nesta aula 2, serão apresentadas formas de se importar (carregar) dados/ planilhas, a partir de diferentes fontes, e como fazer uma análise visual rápida dos dados obtidos. Para utilizar os dados desse pacote é necessário conhecer a função e o que se quer especificar dentro desse pacote. Abaixo seguem alguns meios de importação de dados.
+
+## **Importando dados/ planilhas**
 
 ```{r}
 # IMPORTAÇÕES: 
@@ -32,8 +36,18 @@ df3 <- read_csv("dados-diversos.csv")
 library(gsheet)
 df4 <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=983033137")
 
- 
-  library(ggplot2)
+```
+
+## **Uso do `tidyverse` (`ggplot2`) para visualização rápida dos dados**
+
+Para visualizar os dados, é necessário carregar o pacote responsável pela criação dos gráficos. A variável resposta que se deseja observar deve estar no eixo y. Ao abrir a função do `ggplot` abaixo do pipe, é preciso escolher o que ficará no eixo x e no y.
+
+O `ggplot` trabalha em camadas, então, na primeira camada, você define os aspectos estéticos (*aesthetic*), adicionando camadas conforme deseja adicionar ou editar elementos no gráfico. Dentro do `geom_jitter`, você insere os pontos de dispersão e pode ajustar a distância entre eles, "organizando-os" no gráfico com o comando `"width"`.
+
+Quanto mais simétrico estiver o *box*, mais normal será a distribuição dos dados. Para definir a escala do gráfico, você utiliza a função scale_y_continuous, especificando o limite do intervalo com (limits = c(0, 20)). O número de divisões da escala do gráfico é ajustado com a função n.breaks (= 10).
+
+```{r}
+library(ggplot2)
   g1<- df4 |> 
   ggplot(aes(trat, comp)) +
     geom_boxplot(outlier.colour = NA)+
@@ -46,11 +60,10 @@ df4 <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHS
          y = "Comprimento (mm)",
          title = "meu primeiro ggplot", 
          caption = "fonte: dados diversos")
-  scale_y_continuous(limits = c (5,20),
+  scale_y_continuous(limits = c (0,20),
                      n.breaks = 10)
   g1
   
  # ggsave("plot1.png", bg = "white")
   
-
 ```

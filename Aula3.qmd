@@ -1,5 +1,5 @@
 ---
-title: "Aula 3"
+title: "Importação, visualização e criação de subconjuntos"
 format: html
 editor: visual
 editor_options: 
@@ -8,9 +8,11 @@ warning: false
 message: false 
 ---
 
-\# Importar os dados
+Durante a aula 3, serão apresentadas ferramentas para se realizar uma análise descritiva do conjunto de dados. Além disso, o pacote **`tidyverse`** será utilizado para manipulação, criação de subconjuntos e organização dos dados.
 
-o arquivo foi importado o conjunto de dados csv na web.
+## **Importando dados**
+
+Para importação de um conjunto de dados .csv na web.os dados utlizados serão importados de um arquivo .csv disponível em nuvem. Entretanto, o arquivo traz valores de incidência e severidade da ferrugem do cafeeiro em diferentes regiões da Etiópia, de acordo com o sistema de cultivo, manejo da fazenda, sombreamento, cultivar...
 
 ```{r}
 
@@ -36,11 +38,14 @@ cr |>
 summary(cr$inc)
 
 # Neste caso é multimodal (vairios picos nesse caso antes de 50%)
+#No histograma gerado, é possível notar que os valores de incidência apresentam três picos (ou seja, são valores de incidência com maior frequência). Além disso, a incidência aparenta não seguir distribuição normal, uma vez que o histograma apresenta um deslocamento à esquerda.
+
+
 ```
 
-\# Sumarização
+## Sumarização dos dados
 
-usando as funções "group_bay" e "summary"
+usando as funções "group_bay" e "summary":
 
 ```{r}
  summary(cr$inc)
@@ -48,6 +53,10 @@ usando as funções "group_bay" e "summary"
  #mediana é o valor central 
  
 ```
+
+## Sumarização dos dados
+
+-   É possível criar histogramas por algum critério, por exemplo, as regiões. Para isso, será utilizada a função **`facet_wrap`** e a função `summarize` que serve para resumir ou agregar dados, calculando estatísticas como médias, medianas, desvios padrão, contagens, entre outros, com base em grupos definidos.
 
 ```{r}
 #Agrupamento por região
@@ -59,7 +68,7 @@ cr |>
 
 ```{r}
 
-#MÉDIA 
+#MÉDIA: A média é uma medida de tendência central que representa o valor típico de um conjunto de dados. 
 
 cr |> 
 group_by(region) |> 
@@ -77,6 +86,8 @@ group_by(region) |>
 cr |> 
   ggplot(aes (inc, sev2))+
   geom_point()
+
+#No gráfico gerado é possível observar que há alta correlação positiva entre as variáveis severidade e incidência.
 ```
 
 ```{r}
@@ -91,13 +102,16 @@ cr |>
 
 ```{r}
 cr |> 
-#group_by(cultivar) |> 
   summarise(sev_med= median (sev2),
             sev_mean = mean(sev2),
             sd_mean = sd(sev2)) 
 
 # o que prova que a mediana e a média são mais distates 
 ```
+
+### **Análise da severidade**
+
+-   Serão realizadas análises de severidade em função da região e da cultivar. Será utilizada a função `group_by.`
 
 ```{r}
 # por cultivar 
@@ -119,9 +133,11 @@ group_by(cultivar) |>
 
 ```
 
-```{r}
+#### **Severidade por região e cultivar**
 
-# Região e cultivar 
+Agora, será gerado um histograma da severidade em função de duas variáveis independentes, a região e a cultivar. Nesse caso, será utlilizada a função `facet_grid`:
+
+```{r}
 cr |> 
   ggplot(aes(x = sev2, fill = region))+
   geom_histogram()+
@@ -129,9 +145,9 @@ cr |>
 
 ```
 
-#Visualização
+### **Visualizando os dados do conjunto**
 
-Vamos utilizar a biblioteca ggplot2 para vizualizar os dados do conjunto
+O pacote `ggthemes` no R é uma extensão do `ggplot2` que oferece uma ampla variedade de temas e estilos para personalizar gráficos.
 
 ```{r}
 library(ggthemes)
@@ -152,11 +168,13 @@ cr |>
   theme(legend.position = "bottom")+
   labs(y = "frequency",
        x = "severity (%)", fill = "region")
+
+#É possível notar que com a função facet_grid, o plot se torna mais harmônico.
 ```
 
-\# Cria Subconjuntos
+## **Criando subconjuntos**
 
-Utiliza as funções select() e filter() do pacote \*dplyr\* para selecionar colunas e linhas, respectivamente
+Para criação de subconjuntos, serão utilizadas duas funções: `select` e `filter` :
 
 ```{r}
 # filtra Oromia
@@ -176,9 +194,7 @@ cr_pr
 
 ```
 
-\## Visualiza os subconjuntos
-
-Gráficos ggplot para cada subconjunto
+### **Visualizando os subconjuntos graficamente:**
 
 ```{r}
 p1 <- cr_oromia |> 
@@ -194,9 +210,12 @@ p2 <- cr_pr |>
   labs(x= "", y= "Severity(%)") +
 coord_flip()
 
+#Também é possível inverter o modo como o boxplot é plotado, utilizando a função coord_flip
 ```
 
-Juntar gráficos em diferentes posicionamentos
+### Para juntar gráficos em diferentes posicionamentos:
+
+Utliza-se o pacote `patchwork` uma ferramenta robusta para unir múltiplos gráficos gerados com `ggplot2` em uma única disposição. Ele simplifica a elaboração de layouts complexos e personalizados, possibilitando a combinação de gráficos lado a lado, sobrepostos ou em matrizes.
 
 ```{r}
 library(patchwork)
@@ -223,6 +242,8 @@ p3 <- cr_oromia |>
 
 p1 + inset_element(p3, left = 0.6, bottom = 0.6, right = 1, top = 1)
 ```
+
+Para o salvar o gráfico criado:
 
 ```{r}
 ggsave("patch1.png", width = 5, height = 4)

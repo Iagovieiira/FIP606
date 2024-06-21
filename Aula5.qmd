@@ -1,21 +1,19 @@
 ---
-title: "Aula 5"
+title: "Análise do conjunto de dados da prova"
 format: html
 editor: visual
 message: false
 warnig: false
 ---
 
-Aula 5 - Dado um conjunto de dados da prova:
+Durante a aula 5, serão analisados e interpretados os valores das notas das duas primeiras atividades avaliativas da disciplina FIP 606 foi dado um conjunto de dados da prova:
 
 -   Foram carregadas as seguintes bibliotecas (pacotes) para desenvolver as análises.
-
-<!-- -->
-
 -   Para a importação dos dados foi dado um conjunto de dados contendo as notas dos alunos nas provas 1 e 2 e foram importados usando o link de uma planilha Google seguindo as orientações do professor.
 
+## Pacotes carregados
+
 ```{r}
-#Pacotes carregados:
   
 library(gsheet)
 library(readxl)
@@ -23,6 +21,11 @@ library(ggplot2)
 library(tidyverse)
 library(ggthemes)
 library(patchwork)
+```
+
+## **Importando dados**
+
+```{r}
 
 #importação dos dados via planilha Google:
 

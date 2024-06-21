@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>FIP606 - Aula 5</title>
+<title>FIP606 - Análise do conjunto de dados da prova</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -145,7 +145,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
         <li>
     <a class="dropdown-item" href="./Aula4.html" rel="" target="">
- <span class="dropdown-text">Formato longo e formato largo - Reestruturação do banco de dados</span></a>
+ <span class="dropdown-text">Uso do datapasta e Tabela de contingência</span></a>
   </li>  
     </ul>
   </li>
@@ -233,14 +233,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#pacotes-carregados" id="toc-pacotes-carregados" class="nav-link active" data-scroll-target="#pacotes-carregados">Pacotes carregados</a></li>
+  <li><a href="#importando-dados" id="toc-importando-dados" class="nav-link" data-scroll-target="#importando-dados"><strong>Importando dados</strong></a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Aula 5</h1>
+<h1 class="title">Análise do conjunto de dados da prova</h1>
 </div>
 
 
@@ -255,18 +262,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>Aula 5 - Dado um conjunto de dados da prova:</p>
+<p>Durante a aula 5, serão analisados e interpretados os valores das notas das duas primeiras atividades avaliativas da disciplina FIP 606 foi dado um conjunto de dados da prova:</p>
 <ul>
 <li>Foram carregadas as seguintes bibliotecas (pacotes) para desenvolver as análises.</li>
-</ul>
-<!-- -->
-<ul>
 <li>Para a importação dos dados foi dado um conjunto de dados contendo as notas dos alunos nas provas 1 e 2 e foram importados usando o link de uma planilha Google seguindo as orientações do professor.</li>
 </ul>
+<section id="pacotes-carregados" class="level2">
+<h2 class="anchored" data-anchor-id="pacotes-carregados">Pacotes carregados</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Pacotes carregados:</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gsheet)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gsheet)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: package 'gsheet' was built under R version 4.3.3</code></pre>
 </div>
@@ -295,6 +299,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: package 'patchwork' was built under R version 4.3.3</code></pre>
 </div>
+</div>
+</section>
+<section id="importando-dados" class="level2">
+<h2 class="anchored" data-anchor-id="importando-dados"><strong>Importando dados</strong></h2>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#importação dos dados via planilha Google:</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>df1 <span class="ot">&lt;-</span> <span class="fu">gsheet2tbl</span>(<span class="st">"https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=1092065531"</span>)</span>
@@ -385,7 +394,7 @@ $ nota   &lt;dbl&gt; 71.40, 92.90, 85.70, 42.90, 100.00, 85.70, 100.00, 57.10, 1
 <span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a> </span>
 <span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a> p1<span class="sc">+</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Aula5_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+<p><img src="Aula5_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <ul>
@@ -398,7 +407,7 @@ $ nota   &lt;dbl&gt; 71.40, 92.90, 85.70, 42.90, 100.00, 85.70, 100.00, 57.10, 1
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="fu">factor</span>(prova), nota))<span class="sc">+</span> </span>
 <span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">fill =</span> <span class="st">"skyblue"</span>)<span class="sc">+</span><span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Aula5_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+<p><img src="Aula5_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <ul>
@@ -444,13 +453,14 @@ $ nota   &lt;dbl&gt; 71.40, 92.90, 85.70, 42.90, 100.00, 85.70, 100.00, 57.10, 1
 ℹ Please use `linewidth` instead.</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Aula5_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+<p><img src="Aula5_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Conclusão:</p>
 <p>Podemos observar que numericamente levando em conta a média os alunos foram melhores na segunda prova em comparação com a primeira aproximadamente 5% (referente a nota de um aluno de diferença) levando em conta os números. Entretanto não foram realizados testes estatísticos para demonstrar, apenas as análises numéricas (contagem) e gráficas acima. Visualmente podemos observar que se tem uma tendência as barras estarem mais concentradas acima da média na prova2.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

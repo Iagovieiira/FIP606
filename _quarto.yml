@@ -24,7 +24,7 @@ website:
         - href: Aula3.qmd
           text: Importação, sumarização, viazualização e criação de subconjuntos 
         - href: Aula4.qmd
-          text: Formato longo e formato largo - Reestruturação do banco de dados
+          text: Uso do datapasta e Tabela de contingência
         
       - text: Análises estatísticas
         menu:  
