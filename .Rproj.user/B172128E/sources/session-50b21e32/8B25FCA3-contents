@@ -6,7 +6,7 @@ message: false
 warning: false
 ---
 
-Durante a aula 9, vão ser estudados dados que levam a entender melhor os Experimento fatorial e ajuste de modelos
+Durante a aula 9, vão ser estudados dados que levam a entender melhor os Experimento fatorial e ajuste de modelos.
 
 ## Pacotes carregados
 
@@ -294,7 +294,7 @@ summary(mofo1)
 #### **Mofo 2**
 
 ```{r}
-library(broom)
+library(broom) 
 mofo2 <- wm |> 
   group_by(study) |> 
   do(tidy(lm(.$yld ~ .$inc), conf.int = TRUE))

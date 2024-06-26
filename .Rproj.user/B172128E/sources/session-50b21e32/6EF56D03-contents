@@ -40,7 +40,7 @@ website:
       - text: Elaboração de mapas 
         menu: 
         - href: Aula11.qmd
-          text: Elaboração de Mapas
+          text: Criando mapas no R
   
           
         

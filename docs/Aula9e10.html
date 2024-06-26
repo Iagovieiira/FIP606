@@ -179,7 +179,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <ul class="dropdown-menu" aria-labelledby="nav-menu-elaboração-de-mapas">    
         <li>
     <a class="dropdown-item" href="./Aula11.html" rel="" target="">
- <span class="dropdown-text">Elaboração de Mapas</span></a>
+ <span class="dropdown-text">Criando mapas no R</span></a>
   </li>  
     </ul>
   </li>
@@ -290,7 +290,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>Durante a aula 9, vão ser estudados dados que levam a entender melhor os Experimento fatorial e ajuste de modelos</p>
+<p>Durante a aula 9, vão ser estudados dados que levam a entender melhor os Experimento fatorial e ajuste de modelos.</p>
 <section id="pacotes-carregados" class="level2">
 <h2 class="anchored" data-anchor-id="pacotes-carregados">Pacotes carregados</h2>
 <div class="cell">
@@ -839,7 +839,7 @@ F-statistic:  19.3 on 1 and 380 DF,  p-value: 1.452e-05</code></pre>
 <section id="mofo-2" class="level4">
 <h4 class="anchored" data-anchor-id="mofo-2"><strong>Mofo 2</strong></h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom) </span>
 <span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>mofo2 <span class="ot">&lt;-</span> wm <span class="sc">|&gt;</span> </span>
 <span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(study) <span class="sc">|&gt;</span> </span>
 <span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">do</span>(<span class="fu">tidy</span>(<span class="fu">lm</span>(.<span class="sc">$</span>yld <span class="sc">~</span> .<span class="sc">$</span>inc), <span class="at">conf.int =</span> <span class="cn">TRUE</span>))</span>
