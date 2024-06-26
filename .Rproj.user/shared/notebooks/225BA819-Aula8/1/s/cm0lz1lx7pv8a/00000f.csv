@@ -1,0 +1,6 @@
+"0","check_heteroscedasticity(aov_fer)"
+"1","[31mWarning: Heteroscedasticity (non-constant error variance) detected (p < .001).
+[39m"
+"0","check_normality(aov_fer)"
+"1","[31mWarning: Non-normality of residuals detected (p = 0.008).
+[39m"

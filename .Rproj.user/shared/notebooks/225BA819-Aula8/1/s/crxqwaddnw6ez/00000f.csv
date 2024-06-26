@@ -1,0 +1,7 @@
+"0","prod <- soja |> "
+"0","  ggplot(aes(TRAT, PROD)) +"
+"0","  geom_jitter(width = 0.05, color = ""gray70"") +"
+"0","  stat_summary(fun.data = ""mean_cl_boot"", color = ""black"")"
+"0",""
+"0","dfc"
+"0",""

@@ -1,0 +1,5 @@
+"0","fer <- soja |> "
+"0","  ggplot(aes(TRAT, FER)) +"
+"0","  geom_jitter(which = 0.05)"
+"2","Warning: [38;5;252mIgnoring unknown parameters: `which`[39m"
+"0","dfc"

@@ -1,0 +1,7 @@
+"0","library(gsheet)"
+"2","Warning: package ‘gsheet’ was built under R version 4.3.3"
+"0","library(tidyverse)"
+"0",""
+"0","mg <- gsheet2tbl(""https://docs.google.com/spreadsheets/d/1aID5Dh6PlBVCKzU1j7k-WA6zuWQWE2NhtWEgdJtt5iA/edit?usp=sharing"")"
+"2","Error in open.connection(3L, ""rb"") : HTTP error 404.
+"

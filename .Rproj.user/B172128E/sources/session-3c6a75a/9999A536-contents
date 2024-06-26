@@ -1,0 +1,148 @@
+---
+title: "Análise do conjunto de dados da prova"
+format: html
+editor: visual
+message: false
+warnig: false
+---
+
+Durante a aula 5, serão analisados e interpretados os valores das notas das duas primeiras atividades avaliativas da disciplina FIP 606 foi dado um conjunto de dados da prova:
+
+-   Foram carregadas as seguintes bibliotecas (pacotes) para desenvolver as análises.
+-   Para a importação dos dados foi dado um conjunto de dados contendo as notas dos alunos nas provas 1 e 2 e foram importados usando o link de uma planilha Google seguindo as orientações do professor.
+
+## Pacotes carregados
+
+```{r}
+  
+library(gsheet)
+library(readxl)
+library(ggplot2)
+library(tidyverse)
+library(ggthemes)
+library(patchwork)
+```
+
+## **Importando dados**
+
+```{r}
+
+#importação dos dados via planilha Google:
+
+df1 <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=1092065531")
+
+df1$prova <- as.factor(df1$prova)
+
+```
+
+-   Inicialmente foi feita uma análise dos dados importados (descrevendo o que tem em 3 colunas (prova, pontos e nota):
+
+```{r}
+glimpse(df1)
+```
+
+-   Usando o summary foi observado a nota max e min entre as duas provas.
+
+```{r}
+summary(df1$nota)
+```
+
+-   Foi realizado o teste de média com a sumarização da mesma tanto para primeira avaliação quanto para a segunda:
+
+```{r}
+#Média 
+df1 |> 
+group_by(prova) |> 
+  summarize(inc_mean = mean(nota))
+```
+
+-   Foram feitas média e mediana e foi observado que a dispersão dos dados é bem parecida tanto para prova1 quanto para prova2.
+
+```{r}
+
+#Média, mediana
+
+df1 |> 
+group_by(prova) |> 
+  summarise(inc_med= median (nota), inc_mean = mean(nota), sd_mean = sd(nota)) 
+```
+
+-   Apesar dos dados terem uma distribuição bem similar, de forma visual podemos observar que os alunos foram melhores na prova2, quando comparado com a primeira prova, visto que as barras tem uma tendencia a aumentar depois da linha de marcação da média.
+
+```{r}
+#Filtrando prova 1
+ prova1 <- df1 |> 
+  select (prova, nota) |> 
+  filter(prova == "1")
+ 
+ #Filtrando prova 2
+ prova2 <- df1 |> 
+   select (prova, nota) |> 
+  filter(prova == "2")
+ 
+ p1 <- prova1|> 
+  ggplot(aes(x = nota))+
+  geom_histogram(bins = 5, color = "white", fill = "red")+
+  facet_grid(~prova)+
+  theme_few(base_size = 12)+geom_vline(xintercept = 79.54, linetype = 2) + annotate(geom = "text", x = 75, y = 7.5, label = "mean")+ ylim(0,10)
+ 
+ p2 <- prova2|> 
+  ggplot(aes(x = nota))+
+  geom_histogram(bins = 5, color = "white", fill = "darkgreen")+
+  facet_grid(~prova)+
+  theme_few(base_size = 12)+geom_vline(xintercept = 79.54, linetype = 2) + annotate(geom = "text", x = 75, y = 7.5, label = "mean")+ ylim(0,10)
+ 
+ p1+p2
+```
+
+-   Quando se tem mais que 15 pontos usa-se o boxplot (usado quando se tem muita informação agregada), foram 22 notas na prova1 e 22 notas da prova2, demonstrando uma similaridade nos resultados das duas provas.
+
+```{r}
+# boxplot
+
+df1 |> 
+ ggplot(aes(factor(prova), nota))+ 
+  geom_boxplot(color = "black", fill = "skyblue")+geom_jitter(width = 0.05)
+ 
+
+```
+
+-   Abaixo pode-se observar a quantidade de pessoas que ficaram acima da média tanto na p1 e p2 quanto a diferença entre as notas acima da média nas duas provas.
+
+```{r}
+#OBSERVAÇÃO DE QUANTAS PESSOAS FICARAM ACIMA DA MÉDIA EM P1.
+
+p1 <- df1 |> 
+  filter(prova == 1, nota > mean(nota)) |> 
+  nrow() / 
+df1 |> 
+  filter(prova == 1) |> nrow() * 100
+
+# em p2 mais pessoas ficaram acima da média como pode-se observar. 
+p2 <- df1 |> 
+  filter(prova == 2, nota > mean(nota)) |> 
+  nrow() / 
+df1 |> 
+  filter(prova == 2) |> nrow() * 100
+
+#difrença entre p1 e p2 
+p1-p2
+```
+
+-   Com isso foi plotado um gráfico com pontos das distribuições das notas, podendo-se contar os pontos, observando uma mínima diferença de uma nota acima da média em p2 quando comparada a p1 numericamente.
+
+```{r}
+df1 |> 
+  ggplot(aes(y = nota, x = prova))+
+  geom_jitter(width = 0.36, size = 2, shape = 20, color = "black")+
+  theme_few()+ geom_vline(xintercept = 1.5, linetype = "dotted")+
+  ggtitle("Distribuição de notas de prova1 e prova2")+
+  geom_hline(yintercept = mean(df1$nota),
+             linetype = "dashed",
+             color = 'red',
+             size = 0.75)
+```
+
+Conclusão:
+
+Podemos observar que numericamente levando em conta a média os alunos foram melhores na segunda prova em comparação com a primeira aproximadamente 5% (referente a nota de um aluno de diferença) levando em conta os números. Entretanto não foram realizados testes estatísticos para demonstrar, apenas as análises numéricas (contagem) e gráficas acima. Visualmente podemos observar que se tem uma tendência as barras estarem mais concentradas acima da média na prova2.

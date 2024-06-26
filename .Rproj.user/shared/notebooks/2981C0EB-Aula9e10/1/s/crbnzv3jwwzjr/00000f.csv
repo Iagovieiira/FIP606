@@ -1,0 +1,6 @@
+"0","fit_all |> "
+"0","  filter(term == ""(intercept)"") |> "
+"0","  ggplot(aes(x = estimate))+"
+"0","  geom_histogram(bins = 8, color = ""white"", fill = ""gray50"")+"
+"0","  theme_r4pde()+"
+"0","  labs(x = ""slope"", y = ""frequency"")"

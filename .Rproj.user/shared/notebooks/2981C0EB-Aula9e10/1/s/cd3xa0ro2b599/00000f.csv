@@ -1,0 +1,4 @@
+"0","campo2 <- campo |> "
+"0","  dplyr::select(DFC, FER, PROD)"
+"0",""
+"0","corgraph(campo2)"

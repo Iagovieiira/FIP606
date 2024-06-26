@@ -1,3 +1,0 @@
-"0","    library(emmeans)"
-"0","    m2_medias <- emmeans(m2, ~ spray)"
-"0","    plot(m2_medias)"

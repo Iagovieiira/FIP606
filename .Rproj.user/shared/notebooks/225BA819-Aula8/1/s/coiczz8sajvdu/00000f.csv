@@ -1,0 +1,6 @@
+"0","fer <- soja |> "
+"0","  ggplot(aes(TRAT, FER)) +"
+"0","  geom_jitter(width = 0.05, color = ""gray70"") +"
+"0","  stat_summary(fun.data = ""mean_cl_boot"", color = ""black"")"
+"0",""
+"0","dfc"

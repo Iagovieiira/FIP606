@@ -1,0 +1,11 @@
+"0","library(patchwork)"
+"2","Warning: package ‘patchwork’ was built under R version 4.3.3"
+"2","
+Attaching package: ‘patchwork’
+
+"
+"2","The following object is masked from ‘package:MASS’:
+
+    area
+
+"

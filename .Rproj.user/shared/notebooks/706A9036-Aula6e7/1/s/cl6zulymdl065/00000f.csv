@@ -1,0 +1,5 @@
+"0","li |> "
+"0","  ggplot(aes(factor(dose), severity, color = factor(dose)))+"
+"0","  geom_jitter(whidth = 0.1)+"
+"0"," facet_wrap(~treat)"
+"2","Warning: [38;5;252mIgnoring unknown parameters: `whidth`[39m"

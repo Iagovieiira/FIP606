@@ -1,0 +1,332 @@
+---
+title: "Transformações, ANOVA e teste de média"
+format: html
+editor: visual
+message: false
+warning: false
+---
+
+Durante a aula 8, foram trabalhados dados para apresender a fazer transformações, ANOVA e teste de médias.
+
+## Pacotes carregados
+
+```{r}
+library(tidyverse)
+library(gsheet)
+library(patchwork)
+library(r4pde)
+library(emmeans)
+library(performance)
+library(multcomp)
+library(agricolae)
+library(epifitter)
+```
+
+## **Importando dados**
+
+```{r}
+soja <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=866852711")
+```
+
+Transformar para fator = preciso tranformar fator, pois esta como número.
+
+```{r}
+soja <- soja |> 
+  mutate(TRAT = as.factor(TRAT),
+         BLOCO = as.factor(BLOCO))
+
+is.vector(soja)
+
+is.factor(soja$TRAT)
+```
+
+## **visualização dos dados**
+
+Para visualização dos dados das variáveis dependentes (DFC, FER e PROD), serão construídos gráficos de pontos (`ggplot`: `geom_jitter`) acrescido do intervalo de confiança. Para a apresentação do intervalo de confiança, será utilizada a função `stat_summary (fun.data)`, com o argumento `"mean_cl_boot"`.
+
+Para visualizar os dados, para variavel DFC.
+
+```{r}
+dfc <- soja |> 
+  ggplot(aes(TRAT, DFC)) +
+  geom_jitter(which = 0.05)
+dfc
+```
+
+Para variavel FER:
+
+```{r}
+fer <- soja |> 
+  ggplot(aes(TRAT, FER)) +
+  geom_jitter(which = 0.05)
+dfc
+```
+
+Para variavel prod:
+
+```{r}
+prod <- soja |> 
+  ggplot(aes(TRAT, PROD)) +
+  geom_jitter(which = 0.05)
+dfc
+```
+
+Para juntar os 3 graficos:
+
+```{r}
+(dfc+fer+prod)
+```
+
+```{r}
+dfc <- soja |> 
+  ggplot(aes(TRAT, DFC)) +
+  geom_jitter(width = 0.05, color = "gray70") +
+  stat_summary(fun.data = "mean_cl_boot", color = "black")
+
+dfc
+```
+
+```{r}
+fer <- soja |> 
+  ggplot(aes(TRAT, FER)) +
+  geom_jitter(width = 0.05, color = "gray70") +
+  stat_summary(fun.data = "mean_cl_boot", color = "black")
+
+dfc
+```
+
+```{r}
+prod <- soja |> 
+  ggplot(aes(TRAT, PROD)) +
+  geom_jitter(width = 0.05, color = "gray70") +
+  stat_summary(fun.data = "mean_cl_boot", color = "black")
+
+dfc
+
+```
+
+```{r}
+(dfc+fer+prod)
+```
+
+### **ANOVA DFC**
+
+```{r}
+aov_dfc <- lm(DFC ~ TRAT + BLOCO,
+              data = soja)
+anova(aov_dfc)
+
+#Pvalor indicando com *** e o valor baixo, indiccando que o efeito do tratamento é extremamente significativo. Para blocos, não foi significativo. Pode seguir as análises por que pelo menos uma das médias difere uma da outra, agora temos que saber se podemos confiar na anova e testar as suas premissas de normalidade e homosdasticidade.
+```
+
+#### **Verificação das premissas**
+
+```{r}
+check_heteroscedasticity(aov_dfc)
+check_normality(aov_dfc)
+```
+
+### **Comparação de médias**
+
+Para comparação de médias o modelo gerado acima será aplicado à função `emmeans` para criação de um novo objeto. Essa função estima uma média com base no modelo, logo algumas vezes pode não ser igual a média aritmética.
+
+```{r}
+medias_dfc <- emmeans(aov_dfc, ~ TRAT)
+medias_dfc
+```
+
+Na função `pwpm`, há três informações úteis. Na diagonal, é apresentado o valor médio estimado para cada tratamento. Acima da diagonal, são plotados os valores de probabilidade, relacionados ao teste de Tukey, referentes às comparações múltiplas entre tratamentos. Abaixo da diagonal, há a diferença de valores médios entre os tratamentos.
+
+```{r}
+pwpm(medias_dfc)
+```
+
+```{r}
+cld(medias_dfc, Letters = LETTERS)
+```
+
+### ANOVA fer
+
+```{r}
+aov_fer <- lm(FER ~ TRAT + BLOCO,
+              data = soja)
+anova(aov_fer)
+```
+
+#### **Verificação das premissas**
+
+```{r}
+check_heteroscedasticity(aov_fer)
+check_normality(aov_fer)
+```
+
+```{r}
+## Tranformação por logarítimo
+
+soja <- soja |> 
+  mutate(FER2 = log(FER))
+
+aov_fer2 <- lm (FER2 ~ TRAT + BLOCO, data = soja)
+
+anova(aov_fer2)
+
+check_normality(aov_fer2)
+check_heteroscedasticity(aov_fer2)
+
+
+#A transformação foi suficiente para normalizar os valores do resíduo, no entanto, ainda há heterocedasticidade.
+```
+
+### **Transformação - Box-Cox**
+
+```{r}
+b <- boxcox(lm(soja$FER ~1))
+```
+
+```{r}
+lambda <- b$x[which.max(b$y)] 
+lambda
+```
+
+```{r}
+soja$FER <- (soja$FER^lambda -1)/lambda
+soja$FER
+```
+
+#### **Novo modelo - Após transformação**
+
+```{r}
+aov_fer2 <- lm(FER ~ TRAT + BLOCO,
+              data = soja)
+anova(aov_fer2)
+
+#Para os dados transformados por Box-Cox, o fator fixo TRAT continua possuindo efeito significativo, logo há algum tratamento que difere dos demais. Para o fator BLOCO, não houve efeito já que não há diferença significativa entre eles.
+```
+
+#### **Verificação das premissas**
+
+```{r}
+check_heteroscedasticity(aov_fer2)
+check_normality(aov_fer2)
+
+#Os testes demonstram que a transformação de Box-Cox foi suficiente para conferir normalidade aos resíduos e homogeneidade de variância entre os grupos.
+```
+
+#### **Comparação de médias**
+
+```{r}
+medias_fer2 <- emmeans(aov_fer2, ~ TRAT)
+medias_fer2
+```
+
+```{r}
+cld(medias_fer2, Letters = LETTERS)
+```
+
+#### ANOVA PROD
+
+```{r}
+aov_prod <- lm(PROD ~ TRAT + BLOCO,
+              data = soja)
+anova(aov_prod)
+
+#Para o fator fixo TRAT, há efeito significativo, logo há algum tratamento que difere dos demais. Para o fator BLOCO, não houve efeito já que não há diferença significativa entre eles.
+```
+
+#### **Verificação das premissas**
+
+```{r}
+check_heteroscedasticity(aov_prod)
+#homegenidade de variancia e heteroscedasticidade é a mesma coisa  
+check_normality(aov_prod)
+```
+
+```{r}
+medias_prod <- emmeans(aov_prod, ~ TRAT)
+medias_prod
+
+#Os testes mostram que os resíduos são normalmente distribuídos e que há homogeneidade de variâncias entre os grupos. Assim, é possível continuar a comparação de médias.
+```
+
+```{r}
+pwpm(medias_prod)
+```
+
+```{r}
+cld(medias_prod, Letters = LETTERS)
+```
+
+```{r}
+df_prod <- data.frame(medias_prod)
+df_prod |> 
+  
+  ggplot(aes(TRAT, emmean))+
+  geom_point()+
+  ylim(3000,6500)+
+  geom_errorbar(aes(min = lower.CL,
+                    max = upper.CL),
+                width = 0.1)+
+annotate (geom = "text", x = 1.2, y = 4200,
+         label = "A")
+
+#Gráfico com médias e intervalo de confiança, uma maneira visual de apresentar os resultados.
+```
+
+## CONJUNTO DE DADOS COUVE
+
+## **Importando dados**
+
+```{r}
+couve <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=1807247585")
+```
+
+Para construção de uma curva de progresso da doença usaremos como exemplo um conjunto de dados que descreve diferentes métodos de irrigação (variável independente, um fator, 2 níveis) e seu efeito sobre a severidade (variável dependente) ao longo dos dias.
+
+```{r}
+cov <- couve |> 
+  ggplot(aes(day, severity)) +
+   geom_point(which = 0.05)+
+  facet_wrap(~~ Irrigation)
+cov
+```
+
+Foi criada uma figura com dois gráficos. Um para cada nível do fator \"Irrigation\":
+
+```{r}
+couve |> 
+  group_by(day, Irrigation) |> 
+  summarise(mean_sev = mean(severity)) |> 
+  ggplot(aes(day, mean_sev)) +
+   geom_point(which = 0.05)+ 
+  geom_line()+
+  facet_wrap(~~ Irrigation)
+  
+```
+
+### **Cálculo da área abaixo da curva de progresso da doença**
+
+Para o cálculo da área abaixo da curva de progresso da doença (AACPD, ou \"*area under the disease progress curve\",* AUDPC), será criado um novo dataframe. Para isso, será feito o agrupamento (`group_by`) das variáveis em função do tratamento (\"Irrigation\") e das repetições (\"rep\"). Em seguida, será utilizada a função `summarise` para o cálculo da AACPD (função `AUDPC`, pacote **`epifitter`**).
+
+```{r}
+#AACPD
+
+couve2 <- couve |> 
+  group_by(Irrigation, rep) |> 
+  summarise(aacpd = AUDPC(day, severity))
+```
+
+### **ANOVA**
+
+```{r}
+m_couve <- lm(aacpd ~ Irrigation + factor(rep), data = couve2)
+anova(m_couve)
+
+#A ANOVA mostra que não há diferença entre as áreas.
+```
+
+```{r}
+#coeficiente de variação
+#muito baixo 
+
+cv.model(m_couve)
+```
