@@ -1,5 +1,0 @@
-"0","#matriz de correlação "
-"0","imgs2 <- imgs |> "
-"0","  dplyr::select(3:5)"
-"0",""
-"0","  corgraph(imgs2)"

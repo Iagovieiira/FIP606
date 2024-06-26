@@ -1,0 +1,7 @@
+"0","wm <- WhiteMoldSoybean"
+"0","wm |> "
+"0","  ggplot(aes(inc, yld))+"
+"0","  geom_point()+"
+"0","  facet_wrap(~ study)+"
+"0","  theme_minimal()+"
+"0","  geom_smooth(method = ""lm"", se = F)"

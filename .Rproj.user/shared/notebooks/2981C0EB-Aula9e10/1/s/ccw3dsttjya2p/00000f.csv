@@ -1,3 +1,0 @@
-"0","campo |> "
-"0","  ggplot(aes(DFC, PROD))+"
-"0","  geom_jitter()"
