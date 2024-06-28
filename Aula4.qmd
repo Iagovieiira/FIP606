@@ -260,3 +260,37 @@ cr |>
 ### **Importação de dados de planilha**
 
 Formato `online`
+
+```{r}
+#PACOTES
+library(gsheet)
+library(tidyverse)
+
+mg <- gsheet2tbl ("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=983033137")
+
+#Criando gráficos de colunas com médias e desvio padrão.
+
+
+```
+
+## **visualização dos dados**
+
+```{r}
+mg |> 
+  ggplot(aes(trat, comp))+
+  geom_jitter(width = 0.1)
+
+mg |> 
+  group_by(trat) |>
+  summarise(mean_comp = mean(comp),
+            sd_comp = sd(comp)) |> 
+  ggplot(aes(trat, mean_comp))+
+  geom_col(fill = "steelblue", width = 0.5)+
+  geom_point(size = 3)+
+  ylim(4, 20)+
+  geom_errorbar(aes(ymin = mean_comp - sd_comp,
+                    ymax = mean_comp + sd_comp),
+                width = 0.05)
+
+#GEOM_POINT + GEOM_ERRORBAR 
+```
