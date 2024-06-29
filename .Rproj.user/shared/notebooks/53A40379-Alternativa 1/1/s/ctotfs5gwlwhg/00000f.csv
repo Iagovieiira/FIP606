@@ -1,4 +1,0 @@
-"0","aacpd <- dados |> "
-"0","  group_by(treat, block) |> "
-"0","  summarise(aacpd = AUDPC(assessment, sev_med))"
-"2","`summarise()` has grouped output by 'treat'. You can override using the `.groups` argument."

@@ -1,4 +1,0 @@
-"0","plot4 <- plot4 + "
-"0","  annotate(geom = 'text', x = 7, y = 49, label = 'ns', size = 5)"
-"0",""
-"0","plot4"

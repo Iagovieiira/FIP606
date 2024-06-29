@@ -1,3 +1,0 @@
-"0","produtividade <- dados |> "
-"0","  dplyr::select(Fator1, Fator2, treat.ad, block, productivity)"
-"0","produtividade"
