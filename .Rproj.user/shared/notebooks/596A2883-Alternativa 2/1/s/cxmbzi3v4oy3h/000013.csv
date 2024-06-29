@@ -1,0 +1,3 @@
+"0",""
+"0","fatorial <- produtividade |> "
+"0","  filter(!is.na(Fator1))"

@@ -1,0 +1,8 @@
+"0",""
+"0",""
+"0","trat.ad <- produtividade |> "
+"0","  filter(treat.ad == 'TESTEMUNHA') |> "
+"0","  dplyr::select(productivity)"
+"0",""
+"0",""
+"0","trat.ad"

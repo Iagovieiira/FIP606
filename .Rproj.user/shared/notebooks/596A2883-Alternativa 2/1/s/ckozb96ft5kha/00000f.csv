@@ -1,0 +1,1 @@
+"0","dunnett(trat = y.max1$treat, resp = y.max1$sev.med, control = 'TESTEMUNHA', model = 'DBC', block = y.max1$block)"
